@@ -20,10 +20,10 @@ function App() {
     JSON.parse(localStorage.getItem("darkMode")) || false
   );
 
-  //savedTasks 
-  useEffect(() =>{
+  //savedTasks
+  useEffect(() => {
     localStorage.setItem("tasks", JSON.stringify(tasks));
-  } , [tasks]); 
+  }, [tasks]);
   // في الـ useEffect
   useEffect(() => {
     localStorage.setItem("darkMode", JSON.stringify(darkMode));
@@ -71,7 +71,6 @@ function App() {
     );
   };
 
-  // فلترة المهام
   const filteredTasks = tasks.filter((task) => {
     const matchesFilter =
       filter === "all"
@@ -90,47 +89,35 @@ function App() {
   });
 
   return (
-    <div
-      className={`min-h-screen transition-colors duration-300 ${
-        darkMode ? "bg-gray-900 " : "bg-white "
-      }`}
-    >
+    <>
       <Header darkMode={darkMode} setDarkMode={setDarkMode} />
+      <section
+        className={`min-h-screen transition-colors duration-300 py-12 px-4 md:px-12 ${
+          darkMode ? "bg-gray-900 " : "bg-white "
+        }`}
+      >
+        <TaskForm darkMode={darkMode} onAddTask={addTask} />
+        <FilterBar
+          filter={filter}
+          setFilter={setFilter}
+          searchQuery={searchQuery}
+          setSearchQuery={setSearchQuery}
+          darkMode={darkMode}
+        />
 
-      <main className="container mx-auto px-4 py-8">
-        <div className="max-w-4xl mx-auto">
-          <TaskForm darkMode={darkMode} onAddTask={addTask} />
-
-          <FilterBar
-            filter={filter}
-            setFilter={setFilter}
-            searchQuery={searchQuery}
-            setSearchQuery={setSearchQuery}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+          <TaskList
+            tasks={filteredTasks}
+            onToggleComplete={toggleComplete}
+            onDelete={deleteTask}
+            onUpdate={updateTask}
             darkMode={darkMode}
           />
-
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {/* قائمة المهام */}
-            <div className="lg:col-span-2">
-              <TaskList
-                tasks={filteredTasks}
-                onToggleComplete={toggleComplete}
-                onDelete={deleteTask}
-                onUpdate={updateTask}
-                darkMode={darkMode}
-              />
-            </div>
-
-            {/* الإحصائيات */}
-            <div className="lg:col-span-1">
-              <Stats tasks={tasks}
-                darkMode={darkMode} />
-            </div>
-          </div>
+          <Stats tasks={tasks} darkMode={darkMode} />
         </div>
-      </main>
-            <Footer darkMode={darkMode}/>
-    </div>
+      </section>
+      <Footer darkMode={darkMode} />
+    </>
   );
 }
 
